@@ -10,6 +10,11 @@ datasource db {
 enum PropertyType {
   RESIDENTIAL
   CONDO
+  DUPLEX
+  FLAT
+  INDIVISUAL
+  INDEPENDANT
+  LIVIN
 }
 
 enum UserType {
