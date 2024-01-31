@@ -2,13 +2,12 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nes
 import { Observable } from "rxjs";
 import * as jwt from "jsonwebtoken";
 
-export interface AuthToken {
+export interface DecodedJWT {
   name: string;
   id: number;
   iat: number;
   exp: number;
 }
-
 
 @Injectable()
 export class UserInterceptor implements NestInterceptor {

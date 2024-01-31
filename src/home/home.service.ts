@@ -112,13 +112,31 @@ export class HomeService {
         homeId: id
       }
     });
-    console.log("images deleted");
     await this.prismaService.home.delete({
       where: {
         id
       }
     });
-    console.log("home deleted");
     return { message: "home deleted" };
+  }
+
+  async getRealtorById(id: number) {
+    const home = await this.prismaService.home.findUnique({
+      where: {
+        id
+      },
+      select: {
+        realtor: {
+          select: {
+            name: true,
+            id: true,
+            email: true,
+            phoneNumber: true
+          }
+        }
+      }
+    });
+    if (!home) throw new NotFoundException();
+    return home.realtor;
   }
 }

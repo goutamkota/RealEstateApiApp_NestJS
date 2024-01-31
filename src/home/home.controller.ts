@@ -1,9 +1,23 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  UnauthorizedException,
+  UseGuards
+} from "@nestjs/common";
 import { HomeService } from "./home.service";
-import { PropertyType } from "@prisma/client";
+import { PropertyType, UserType } from "@prisma/client";
 import { CreateHomeDto, HomeResponseDto, QUERY_PARAMS, UpdateHomeDto } from "./dtos/home.dto";
 import { User } from "../user/decorators/user.decorator";
-import { AuthToken } from "../user/interceptors/user.interceptor";
+import { DecodedJWT } from "../user/interceptors/user.interceptor";
+import { AuthGuard } from "../guards/auth.guard";
+import { Roles } from "../decorators/roles.decorator";
 
 @Controller("home")
 export class HomeController {
@@ -41,18 +55,25 @@ export class HomeController {
     return this.homeService.getHomeById(id);
   }
 
+  @Roles(UserType.ADMIN, UserType.REALTOR)
   @Post()
-  createHome(@Body() body: CreateHomeDto, @User() user: AuthToken): Promise<HomeResponseDto> {
+  createHome(@Body() body: CreateHomeDto, @User() user: DecodedJWT): Promise<HomeResponseDto> {
     return this.homeService.createHome(body, user.id);
   }
 
+  @Roles(UserType.REALTOR)
   @Put(":id")
-  updateHome(@Param("id") id: number, @Body() body: UpdateHomeDto) {
+  async updateHome(@Param("id") id: number, @Body() body: UpdateHomeDto, @User() user: DecodedJWT): Promise<HomeResponseDto> {
+    const realtor = await this.homeService.getRealtorById(id);
+    if (realtor.id !== user.id) throw new UnauthorizedException();
     return this.homeService.updateHome(id, body);
   }
 
+  @Roles(UserType.REALTOR)
   @Delete(":id")
-  deleteHome(@Param("id", ParseIntPipe) id: number) {
+  async deleteHome(@Param("id", ParseIntPipe) id: number, @User() user: DecodedJWT) {
+    const realtor = await this.homeService.getRealtorById(id);
+    if (realtor.id !== user.id) throw new UnauthorizedException();
     return this.homeService.deleteHome(id);
   }
 
