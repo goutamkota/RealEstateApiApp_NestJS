@@ -8,15 +8,13 @@ import {
   Post,
   Put,
   Query,
-  UnauthorizedException,
-  UseGuards
+  UnauthorizedException
 } from "@nestjs/common";
 import { HomeService } from "./home.service";
 import { PropertyType, UserType } from "@prisma/client";
 import { CreateHomeDto, HomeResponseDto, QUERY_PARAMS, UpdateHomeDto } from "./dtos/home.dto";
 import { User } from "../user/decorators/user.decorator";
 import { DecodedJWT } from "../user/interceptors/user.interceptor";
-import { AuthGuard } from "../guards/auth.guard";
 import { Roles } from "../decorators/roles.decorator";
 
 @Controller("home")

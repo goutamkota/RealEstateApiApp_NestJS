@@ -27,10 +27,10 @@ model User {
   id              Int       @id @default(autoincrement())
   name            String
   phoneNumber     String
-  email           String    @unique
+  email           String    @unique()
   password        String
   createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  updatedAt       DateTime  @updatedAt()
   userType        UserType
   homes           Home[]
   buyerMessages   Message[] @relation("buyerMessages")
@@ -48,7 +48,7 @@ model Home {
   landSize          Float
   propertyType      PropertyType
   createdDate       DateTime     @default(now())
-  updatedDate       DateTime     @updatedAt
+  updatedDate       DateTime     @updatedAt()
   images            Image[]
   realtorId         Int
   realtor           User         @relation(fields: [realtorId], references: [id])
@@ -59,7 +59,7 @@ model Image {
   id        Int      @id @default(autoincrement())
   url       String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt()
   homeId    Int
   home      Home     @relation(fields: [homeId], references: [id])
 }
